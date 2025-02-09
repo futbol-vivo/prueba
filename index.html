@@ -1,151 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Preforma de Streaming - Estilo Netflix</title>
-  <style>
-    /* Estilos generales inspirados en Netflix */
-    body {
-      background-color: #141414;
-      color: #e5e5e5;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .navbar {
-      background-color: #141414;
-      padding: 1em;
-      display: flex;
-      justify-content: space-around;
-    }
-    .navbar a {
-      color: #e5e5e5;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .article {
-      margin: 1em;
-      padding: 1em;
-      background-color: #333;
-      border-radius: 4px;
-    }
-    .login-form {
-      max-width: 300px;
-      margin: 100px auto;
-      padding: 2em;
-      background-color: #333;
-      border-radius: 4px;
-      text-align: center;
-    }
-    .login-form input {
-      width: 100%;
-      padding: 0.5em;
-      margin: 0.5em 0;
-      border: none;
-      border-radius: 4px;
-    }
-    .login-form button {
-      padding: 0.5em;
-      width: 100%;
-      background-color: #e50914;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming - Inicio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="content"></div>
-  
-  <script>
-    // Variable para simular la sesión del usuario
-    let isLoggedIn = false;
+    <header>
+        <h1>Mi Plataforma de Streaming</h1>
+        <nav>
+            <button id="logoutBtn">Cerrar sesión</button>
+        </nav>
+    </header>
 
-    // Función para mostrar el formulario de login
-    function showLogin() {
-      document.getElementById('content').innerHTML = `
-        <div class="login-form">
-          <h2>Iniciar Sesión</h2>
-          <input type="text" id="username" placeholder="Usuario">
-          <input type="password" id="password" placeholder="Contraseña">
-          <button onclick="login()">Ingresar</button>
+    <main>
+        <h2>Canales Disponibles</h2>
+        <div class="channels">
+            <a href="channel.html?channel=accion" class="channel">Canal Acción</a>
+            <a href="channel.html?channel=deportes" class="channel">Canal Deportes</a>
+            <a href="channel.html?channel=noticias" class="channel">Canal Noticias</a>
         </div>
-      `;
-    }
+    </main>
 
-    // Función de login básica
-    function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      
-      // Validación muy básica: se requiere cualquier valor en ambos campos
-      if(username && password) {
-        isLoggedIn = true;
-        showHome();
-      } else {
-        alert("Por favor, ingresa usuario y contraseña.");
-      }
-    }
-
-    // Función para mostrar la página de inicio con artículos
-    function showHome() {
-      if (!isLoggedIn) return showLogin();
-
-      document.getElementById('content').innerHTML = `
-        <nav class="navbar">
-          <a href="#" onclick="showHome()">Inicio</a>
-          <a href="#" onclick="showChannel('canal1')">Canal 1</a>
-          <a href="#" onclick="showChannel('canal2')">Canal 2</a>
-        </nav>
-        <section>
-          <div class="article">
-            <h3>Artículo 1</h3>
-            <p>Resumen del artículo 1...</p>
-            <a href="#" onclick="showArticle('articulo1')">Leer más</a>
-          </div>
-          <div class="article">
-            <h3>Artículo 2</h3>
-            <p>Resumen del artículo 2...</p>
-            <a href="#" onclick="showArticle('articulo2')">Leer más</a>
-          </div>
-        </section>
-      `;
-    }
-
-    // Función para mostrar el contenido de un artículo
-    function showArticle(articleId) {
-      if (!isLoggedIn) return showLogin();
-
-      document.getElementById('content').innerHTML = `
-        <nav class="navbar">
-          <a href="#" onclick="showHome()">Inicio</a>
-        </nav>
-        <article>
-          <h2>${articleId.toUpperCase()}</h2>
-          <p>Contenido detallado del ${articleId}...</p>
-        </article>
-      `;
-    }
-
-    // Función para mostrar la página de un canal de TV
-    function showChannel(channelId) {
-      if (!isLoggedIn) return showLogin();
-
-      document.getElementById('content').innerHTML = `
-        <nav class="navbar">
-          <a href="#" onclick="showHome()">Inicio</a>
-        </nav>
-        <section>
-          <h2>${channelId.toUpperCase()}</h2>
-          <p>Contenido exclusivo para ${channelId}...</p>
-        </section>
-      `;
-    }
-
-    // Mostrar el formulario de login al cargar la página
-    showLogin();
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
