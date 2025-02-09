@@ -38,74 +38,46 @@ header h1 {
     background: darkred;
 }
 
-/* Estilos del login */
-.login-container {
-    width: 90%;
-    max-width: 350px;
-    margin: 100px auto;
+/* Canales - Diseño en 3 columnas */
+.channels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
     padding: 20px;
+}
+
+.channel-card {
     background: #222;
     border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.login-container h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    background: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    border-radius: 5px;
-}
-
-button:hover {
-    background: darkred;
-}
-
-/* Canales */
-.channels {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.channel {
-    background: red;
-    padding: 15px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    width: 250px;
+    overflow: hidden;
     text-align: center;
-    transition: 0.3s;
 }
 
-.channel:hover {
+.channel-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.channel-card a {
+    display: block;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.channel-card:hover {
     background: darkred;
 }
 
-/* Media Queries para Responsividad */
+/* Iframe de canal */
+iframe {
+    width: 100%;
+    height: 90vh;
+}
+
+/* Responsividad */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -113,33 +85,13 @@ button:hover {
         text-align: center;
     }
 
-    header h1 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    #logoutBtn {
-        font-size: 14px;
-        padding: 8px 15px;
-    }
-
-    .channels {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .channel {
-        width: 90%;
+    .channels-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
 @media (max-width: 480px) {
-    .login-container {
-        width: 90%;
-        margin-top: 50px;
-    }
-
-    button {
-        font-size: 16px;
+    .channels-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
