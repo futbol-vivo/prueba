@@ -1,6 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
     const logoutBtn = document.getElementById("logoutBtn");
+    const channelsContainer = document.getElementById("channels-container");
+
+    // Lista de canales (Se puede ampliar fácilmente)
+    const channels = [
+        { id: "accion", name: "Canal Acción", img: "accion.jpg", url: "https://www.youtube.com/embed/tgbNymZ7vqY" },
+        { id: "deportes", name: "Canal Deportes", img: "deportes.jpg", url: "https://www.youtube.com/embed/tgbNymZ7vqY" },
+        { id: "noticias", name: "Canal Noticias", img: "noticias.jpg", url: "https://www.youtube.com/embed/tgbNymZ7vqY" },
+        // Agrega más canales aquí
+    ];
+
+    // Generar canales en la página de inicio
+    if (channelsContainer) {
+        channels.forEach(channel => {
+            const channelCard = document.createElement("div");
+            channelCard.classList.add("channel-card");
+            channelCard.innerHTML = `
+                <img src="${channel.img}" alt="${channel.name}">
+                <a href="channel.html?channel=${channel.id}">${channel.name}</a>
+            `;
+            channelsContainer.appendChild(channelCard);
+        });
+    }
 
     // Función para verificar sesión
     function checkAuth() {
@@ -31,33 +53,15 @@ document.addEventListener("DOMContentLoaded", function () {
         checkAuth();
     }
 
-    // Cerrar sesión
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function () {
-            localStorage.removeItem("user");
-            window.location.href = "login.html";
-        });
-    }
-
-    // Página de canales
+    // Página de canal
     if (window.location.pathname.includes("channel.html")) {
         const urlParams = new URLSearchParams(window.location.search);
-        const channel = urlParams.get("channel");
-        const channelTitle = document.getElementById("channelTitle");
-        const channelContent = document.getElementById("channelContent");
-
-        const channels = {
-            accion: "Bienvenido al canal de Acción, disfruta de tus películas favoritas.",
-            deportes: "Bienvenido al canal de Deportes, sigue los mejores eventos deportivos.",
-            noticias: "Bienvenido al canal de Noticias, mantente informado."
-        };
-
-        if (channel && channels[channel]) {
-            channelTitle.textContent = `Canal ${channel.charAt(0).toUpperCase() + channel.slice(1)}`;
-            channelContent.textContent = channels[channel];
-        } else {
-            channelTitle.textContent = "Canal no encontrado";
-            channelContent.textContent = "El canal solicitado no existe.";
+        const channelId = urlParams.get("channel");
+        const channel = channels.find(c => c.id === channelId);
+        if (channel) {
+            document.getElementById("channelTitle").textContent = channel.name;
+            document.getElementById("channelIframe").src = channel.url;
         }
     }
 });
+
