@@ -1,118 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <!-- Mantenemos la mayoría de los <script>, <style> y recursos tal cual: JW Player, Flowplayer, etc. -->
-    <title>WebTV Player</title>
-    <!-- ... Resto de tus librerías y estilos ... -->
+    <!-- Carga de Clappr -->
+    <script src="//cdn.jsdelivr.net/npm/@clappr/player@0.8/dist/clappr.min.js"></script>
+    <!-- Carga de la librería P2P de Swarmcloud (para HLS.js) -->
+    <script src="//cdn.jsdelivr.net/npm/@swarmcloud/hls/p2p-engine.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="https://la12hd.com/cssm.css">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/e9/Win%2B_F%C3%BAtbol_logo.svg">
+    <title>Win+ Fútbol (Clappr + P2P)</title>
+    
+    <style>
+        html, body {
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden;
+        }
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
-<body class="attechback">
-<!-- ... Todo el HTML de la cabecera, buscadores, menús y contenedores ... -->
 
-<script type="text/javascript">
-// == Parte importante: ajustaremos la reproducción para usar siempre la URL fija ==
+<body>
+<div id="player"></div>
 
-// NUEVA URL QUE QUEREMOS REPRODUCIR
-var FIXED_STREAM_URL = "http://45.137.206.120:8089/play/hls/eyJpdiI6Im1lSFRmdS9SaUorUXY5QXB5emYra0E9PSIsInZhbHVlIjoibHUrcktTNWZBdXB6VnM4MXVFRWh4aVl0UEM5c1RxN0ZIelN4d080YzhrcjNxN0xNNktrT0FkcnZaM0FkYzViMCIsIm1hYyI6ImE5OTg2MGUzMjJmODA1MzM5M2RiYWMyOTNlZDBmNWEwZjAxMzA0NDQzMzhjMTM1NDY2Yjc4OGE1OTBlNDU5YmIiLCJ0YWciOiIifQ==/be609419-a9e1-471e-8144-8df2c2290f30.m3u8?lvtoken=eyJpdiI6InYrcHlkcE9nV3JzYk1uRDBmUWtTSkE9PSIsInZhbHVlIjoialUrRkVjZDVKamptL1BaMVFsN0txeTZqdUtDRWlhZ0p0RjlacWgvek0rWVBoV2hYQXBvSUlNTFZHVTNWcW03MzhzMEc2ZTJubWY1L3BDdnpyK215WDd6b2Q5TmtmWDVkRWtlMzhMTi85ODdhM2hOSW00MjBucmNmc3V1bmdmbGtaOTZWMERZbVRNV3p0Vi8wcmQ2WHdiblh6VjZsSlBldXQ5ZC9VS3BjVVY4bEtqSyt1dG9vRWNqUHMvWk1SRWYrdW9GdVpNNVA4aVA3Yml0RXNjSURiUT09IiwibWFjIjoiMTNmNjg0MzkzNGIyYjYwZTk1NTg4MGE1N2RjYWEzZTMwOTMwYWMwNmI4NzY2OTQ3YzNhYzQ1NjAwOTAxNmI0OCIsInRhZyI6IiJ9&r=06a307&rt=6ba56e71afbc6a418156df8a892b1b4b";
+<script>
+    /* Nueva URL que queremos reproducir, igual que con JW Player */
+    var playbackURL = "http://45.137.206.120:8089/play/hls/eyJpdiI6Im1lSFRmdS9SaUorUXY5QXB5emYra0E9PSIsInZhbHVlIjoibHUrcktTNWZBdXB6VnM4MXVFRWh4aVl0UEM5c1RxN0ZIelN4d080YzhrcjNxN0xNNktrT0FkcnZaM0FkYzViMCIsIm1hYyI6ImE5OTg2MGUzMjJmODA1MzM5M2RiYWMyOTNlZDBmNWEwZjAxMzA0NDQzMzhjMTM1NDY2Yjc4OGE1OTBlNDU5YmIiLCJ0YWciOiIifQ==/be609419-a9e1-471e-8144-8df2c2290f30.m3u8?lvtoken=eyJpdiI6InYrcHlkcE9nV3JzYk1uRDBmUWtTSkE9PSIsInZhbHVlIjoialUrRkVjZDVKamptL1BaMVFsN0txeTZqdUtDRWlhZ0p0RjlacWgvek0rWVBoV2hYQXBvSUlNTFZHVTNWcW03MzhzMEc2ZTJubWY1L3BDdnpyK215WDd6b2Q5TmtmWDVkRWtlMzhMTi85ODdhM2hOSW00MjBucmNmc3V1bmdmbGtaOTZWMERZbVRNV3p0Vi8wcmQ2WHdiblh6VjZsSlBldXQ5ZC9VS3BjVVY4bEtqSyt1dG9vRWNqUHMvWk1SRWYrdW9GdVpNNVA4aVA3Yml0RXNjSURiUT09IiwibWFjIjoiMTNmNjg0MzkzNGIyYjYwZTk1NTg4MGE1N2RjYWEzZTMwOTMwYWMwNmI4NzY2OTQ3YzNhYzQ1NjAwOTAxNmI0OCIsInRhZyI6IiJ9&r=06a307&rt=6ba56e71afbc6a418156df8a892b1b4b";
 
-// -------------------------------------------------------------
-// 1) Ajustamos esta función para que *siempre* use la URL fija
-// -------------------------------------------------------------
-function playchannesandconfigEPG(streamId) {
-    // (Si quieres conservar la lógica de "historial" o "EPG", puedes dejarla;
-    //  sólo nos interesa que la URL final siempre sea FIXED_STREAM_URL.)
+    // Configuración básica para el P2P
+    var p2pConfig = {
+        live: true,         // Indica transmisión en vivo
+        trackerZone: 'us',  // Zona del tracker
+    };
 
-    // Por simplicidad, comentaré la parte que generaba la URL dinámica:
-    //   playlinkis = "http://offshore.lat:8080/live/garoo38cmsv/monicoo38ndz/"+streamId+".m3u8";
+    // 1) Intentamos registrar el Service Worker de P2P
+    //    -> Esto sólo funciona bajo HTTPS o localhost
+    P2PEngineHls.tryRegisterServiceWorker(p2pConfig).then(() => {
 
-    // En su lugar, forzamos la URL fija:
-    var playlinkis = FIXED_STREAM_URL;
+        // 2) Creamos el reproductor Clappr
+        var player = new Clappr.Player({
+            source: playbackURL,
+            parentId: "#player",
+            poster: '',
+            width: '100%',
+            height: '100%',
+            autoPlay: true,    // Ten en cuenta las políticas de autoplay
+            mediacontrol: {
+                seekbar: "#D4ED31",
+                buttons: "#FFFFFF"
+            },
+            plugins: []        // si tuvieras otros plugins de Clappr, los incluirías
+        });
 
-    // El resto (historial, EPG, etc.) se conserva:
-    currentPlayingStream = streamId;  // o en todo caso, podrías omitirlo.
-    // Llamamos al reproductor JW o Flowplayer según la config:
-    if (changePlayerSetting === 'JW Player (Recommended)') {
-        getVideoLinkAjax(playlinkis);
-    } else {
-        getVideoLinkAjax_InFlowplayer(playlinkis);
-    }
+        // 3) Vinculamos la instancia interna de HLS.js con el P2P Engine
+        p2pConfig.hlsjsInstance = player.core.getCurrentPlayback()?._hls;
+        var engine = new P2PEngineHls(p2pConfig);
 
-    // ... A continuación, si quieres seguir mostrando EPG para "streamId",
-    //     puedes llamar tu AJAX de EPG. O podrías también eliminarlo si
-    //     ya no usas streamId para nada.
-    showHideLoaderEPGData();
-
-    // Mantengo el AJAX EPG, suponiendo que tu backend requiere "stream_id"
-    // para devolver datos:
-    $.ajax({
-       type: "POST",
-       url: "themes/"+currentthemename+"/includes/requesthandler.php",
-       dataType:"text",
-       data:{
-         action:"callApiRequestEpg",
-         subaction:"get_short_epg&stream_id="+streamId,  // Envías el ID igual
-         tformat:selectedtime,
-         etimes:selectedepgtime
-       },
-       success: function (data) {
-          $('.liveEPGdiv').html(data);
-          // ...
-       },
-       error: function (error) {
-          showerrorcode("101",".mainBody");
-       }
+    }).catch(err => {
+        console.error("Error al registrar SW para P2P:", err);
+        // Si falla, podrías cargar Clappr sin P2P como fallback:
+        var player = new Clappr.Player({
+            source: playbackURL,
+            parentId: "#player",
+            width: '100%',
+            height: '100%',
+            autoPlay: true
+        });
     });
-}
-
-// -------------------------------------------------------------
-// 2) Dejamos getVideoLinkAjax tal cual, sólo que ahora siempre
-//    recibe playlinkis = FIXED_STREAM_URL
-// -------------------------------------------------------------
-function getVideoLinkAjax($Videolink = "", FailCounter = "") {
-    // ...
-    var $LiveVideoLink = $Videolink;  // ahora siempre = FIXED_STREAM_URL
-
-    if(reconnectInt !== null || reconnectInt !== undefined) {
-      clearInterval(reconnectInt);
-    }
-
-    var player = jwplayer('liveplayer-wrapper');
-    player.setup({
-        "file": $LiveVideoLink,
-        "width":"100%",
-        "aspectratio": "16:9"
-    });
-
-    // Resto de la lógica de reconexión y error:
-    player.on('play', function(){
-        // ...
-    });
-    player.on('error', function() {
-        // ...
-        reconnectLoop($LiveVideoLink, FailCounter);
-    });
-}
-
-// -------------------------------------------------------------
-// 3) Dejamos también getVideoLinkAjax_InFlowplayer igual, si
-//    prefieres Flowplayer en vez de JW Player
-// -------------------------------------------------------------
-function getVideoLinkAjax_InFlowplayer($Videolink = "") {
-    var timer = "";
-    initialDelay = 10;
-
-    // Eliminamos la URL previa y ponemos la nueva:
-    // #liveplayer-wrapper se resetea y configuras flowplayer con $Videolink
-    // ...
-}
-
-// -------------------------------------------------------------
-// 4) IMPORTANTE: El resto de la lógica (búsqueda de canales, guardado
-//    en historial, etc.) permanece igual. Lo ÚNICO que cambiamos es
-//    la parte donde se forma la URL HLS, para que sea la fija.
-// -------------------------------------------------------------
 
 </script>
-
-<!-- Resto del HTML completo tal cual tu proyecto... -->
 </body>
 </html>
