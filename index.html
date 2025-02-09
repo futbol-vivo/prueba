@@ -1,154 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
 
-<script src="//cdn.jsdelivr.net/npm/@clappr/player@0.8/dist/clappr.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="//cdn.jsdelivr.net/npm/@clappr/player@0.8/dist/clappr.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/@swarmcloud/hls/p2p-engine.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://la12hd.com/cssm.css">
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/e9/Win%2B_F%C3%BAtbol_logo.svg">
     <title>Win+ Fútbol</title>
     <style>body, html {margin: 0;padding: 0;width: 100%;height: 100%;overflow: hidden;}#player {position: absolute;top: 0;left: 0;width: 100%;height: 100%;}</style>
-    
-   <script type='text/javascript' src='//sillinesswoollen.com/4a/2f/d3/4a2fd348abd6246b82a4aecffcd3bc59.js'></script>
-   
-   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G45TS6BVFH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-G45TS6BVFH');
-</script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream en Iframe</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .instagram-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #0094ff;
-            color: #ffffff;
-            padding: 5px 4px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            z-index: 9999;
-            font-size: 10px;
-            font-family: Arial, sans-serif;
-        }
-
-      .embed-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #2c3448;
-            color: #ffffff;
-            padding: 5px 4px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            z-index: 9999;
-            font-size: 10px;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-
-        .embed-button:hover {
-            background-color: #21293d;
-        }
-
-        /* Cuadro emergente */
-        .embed-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #0b0f19;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            width: 80%;
-            max-width: 500px;
-        }
-
-        .embed-modal textarea {
-            width: 100%;
-            height: 120px;
-            background-color: #21252e;
-            color: #ffffff;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            resize: none;
-            font-family: Arial, sans-serif;
-        }
-
-        .embed-modal button {
-            margin-top: 10px;
-            background-color: #21252e;
-            color: #ffffff;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .embed-modal button:hover {
-            background-color: #21293d;
-        }
-
-        .embed-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-        
-        }
-    </style>
 </head>
 <body>
-    <iframe id="streamIframe" allow="fullscreen; autoplay; encrypted-media; picture-in-picture"></iframe>
+<div id="player"></div>
+<script>
+    var playbackURL = "https://ja.periquitopan.store/dazn1/tracks-v1a1/mono.m3u8?md5=9sgQXsfKnCAEbD-1ZGFA2A&expires=1739127583";
+    var p2pConfig = {
+        live: true,
+        trackerZone: 'us',    
+    }
+    P2PEngineHls.tryRegisterServiceWorker(p2pConfig).then(() => {
+        var player = new Clappr.Player({
+            source: playbackURL,
+            parentId: "#player",
+            poster: '',
+            width: '100%',
+            height: '100%',
+            autoPlay: true,
+            plugins: [],
+            mediacontrol: {seekbar: "#D4ED31", buttons: "#FFFFFF"},
 
-    <button id="embed-button" class="embed-button">Usar Embed</button>
+        });
+        p2pConfig.hlsjsInstance = player.core.getCurrentPlayback()?._hls;
+        var engine = new P2PEngineHls(p2pConfig);
+    });
+</script>
 
-    <div id="embed-modal-overlay" class="embed-modal-overlay"></div>
-    <div id="embed-modal" class="embed-modal">
-        <h3>Embed Code</h3>
-        <textarea id="embed-code" readonly></textarea>
-        <button id="close-modal" class="close-modal">Cerrar</button>
-    </div>
-
-  
-    
 </body>
+
 </html>
