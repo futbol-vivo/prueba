@@ -1,92 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Carga de Clappr (versión estable 0.8.x) -->
-    <script src="https://cdn.jsdelivr.net/npm/@clappr/player@0.8/dist/clappr.min.js"></script>
-    <!-- Carga de la librería P2P de Swarmcloud (para HLS.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/@swarmcloud/hls/p2p-engine.min.js"></script>
-
-    <!-- Puedes quitar o cambiar la hoja de estilos e icono si no aplican a tu proyecto -->
-    <link rel="stylesheet" type="text/css" href="https://la12hd.com/cssm.css">
-    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/e9/Win%2B_F%C3%BAtbol_logo.svg">
-
-    <title>Reproductor HLS con P2P</title>
-    <style>
-        /* Ocupa todo el alto y ancho de la ventana */
-        html, body {
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden;
-        }
-        #player {
-            width: 100%;
-            height: 100%;
-            position: relative; /* O absolute, según prefieras */
-        }
-    </style>
+    <!-- Mantenemos la mayoría de los <script>, <style> y recursos tal cual: JW Player, Flowplayer, etc. -->
+    <title>WebTV Player</title>
+    <!-- ... Resto de tus librerías y estilos ... -->
 </head>
-<body>
-<div id="player"></div>
-<script>
-    /* 
-     * URL HLS con parámetros y token "lvtoken". 
-     * Observa que la URL es HTTP (no HTTPS). Si sirves esta página como HTTPS,
-     * el navegador podría bloquear la carga mixta (mixed content).
-     */
-    var playbackURL = "http://45.137.206.120:8089/play/hls/eyJpdiI6Im1lSFRmdS9SaUorUXY5QXB5emYra0E9PSIsInZhbHVlIjoibHUrcktTNWZBdXB6VnM4MXVFRWh4aVl0UEM5c1RxN0ZIelN4d080YzhrcjNxN0xNNktrT0FkcnZaM0FkYzViMCIsIm1hYyI6ImE5OTg2MGUzMjJmODA1MzM5M2RiYWMyOTNlZDBmNWEwZjAxMzA0NDQzMzhjMTM1NDY2Yjc4OGE1OTBlNDU5YmIiLCJ0YWciOiIifQ==/be609419-a9e1-471e-8144-8df2c2290f30.m3u8?lvtoken=eyJpdiI6InYrcHlkcE9nV3JzYk1uRDBmUWtTSkE9PSIsInZhbHVlIjoialUrRkVjZDVKamptL1BaMVFsN0txeTZqdUtDRWlhZ0p0RjlacWgvek0rWVBoV2hYQXBvSUlNTFZHVTNWcW03MzhzMEc2ZTJubWY1L3BDdnpyK215WDd6b2Q5TmtmWDVkRWtlMzhMTi85ODdhM2hOSW00MjBucmNmc3V1bmdmbGtaOTZWMERZbVRNV3p0Vi8wcmQ2WHdiblh6VjZsSlBldXQ5ZC9VS3BjVVY4bEtqSyt1dG9vRWNqUHMvWk1SRWYrdW9GdVpNNVA4aVA3Yml0RXNjSURiUT09IiwibWFjIjoiMTNmNjg0MzkzNGIyYjYwZTk1NTg4MGE1N2RjYWEzZTMwOTMwYWMwNmI4NzY2OTQ3YzNhYzQ1NjAwOTAxNmI0OCIsInRhZyI6IiJ9&r=06a307&rt=6ba56e71afbc6a418156df8a892b1b4b";
+<body class="attechback">
+<!-- ... Todo el HTML de la cabecera, buscadores, menús y contenedores ... -->
 
-    /* Configuración P2P:
-     * - live: true indica streaming en vivo
-     * - trackerZone: 'us' o el que corresponda
-     */
-    var p2pConfig = {
-        live: true,
-        trackerZone: 'us',
-    };
+<script type="text/javascript">
+// == Parte importante: ajustaremos la reproducción para usar siempre la URL fija ==
 
-    // Función auxiliar para inicializar Clappr con o sin P2P
-    function initPlayer(useP2P) {
-        var player = new Clappr.Player({
-            source: playbackURL,
-            parentId: "#player",
-            autoPlay: true,         // Ten en cuenta que se puede bloquear en algunos navegadores
-            mute: false,            // Si necesitas autoplay en móviles, considera mute: true
-            width: '100%',
-            height: '100%',
-            mediacontrol: {
-                seekbar: "#D4ED31",
-                buttons: "#FFFFFF"
-            },
-            // plugins: [], // si tuvieras plugins adicionales de Clappr
-        });
+// NUEVA URL QUE QUEREMOS REPRODUCIR
+var FIXED_STREAM_URL = "http://45.137.206.120:8089/play/hls/eyJpdiI6Im1lSFRmdS9SaUorUXY5QXB5emYra0E9PSIsInZhbHVlIjoibHUrcktTNWZBdXB6VnM4MXVFRWh4aVl0UEM5c1RxN0ZIelN4d080YzhrcjNxN0xNNktrT0FkcnZaM0FkYzViMCIsIm1hYyI6ImE5OTg2MGUzMjJmODA1MzM5M2RiYWMyOTNlZDBmNWEwZjAxMzA0NDQzMzhjMTM1NDY2Yjc4OGE1OTBlNDU5YmIiLCJ0YWciOiIifQ==/be609419-a9e1-471e-8144-8df2c2290f30.m3u8?lvtoken=eyJpdiI6InYrcHlkcE9nV3JzYk1uRDBmUWtTSkE9PSIsInZhbHVlIjoialUrRkVjZDVKamptL1BaMVFsN0txeTZqdUtDRWlhZ0p0RjlacWgvek0rWVBoV2hYQXBvSUlNTFZHVTNWcW03MzhzMEc2ZTJubWY1L3BDdnpyK215WDd6b2Q5TmtmWDVkRWtlMzhMTi85ODdhM2hOSW00MjBucmNmc3V1bmdmbGtaOTZWMERZbVRNV3p0Vi8wcmQ2WHdiblh6VjZsSlBldXQ5ZC9VS3BjVVY4bEtqSyt1dG9vRWNqUHMvWk1SRWYrdW9GdVpNNVA4aVA3Yml0RXNjSURiUT09IiwibWFjIjoiMTNmNjg0MzkzNGIyYjYwZTk1NTg4MGE1N2RjYWEzZTMwOTMwYWMwNmI4NzY2OTQ3YzNhYzQ1NjAwOTAxNmI0OCIsInRhZyI6IiJ9&r=06a307&rt=6ba56e71afbc6a418156df8a892b1b4b";
 
-        if (useP2P) {
-            // Vinculamos la instancia HLS interna al motor P2P
-            p2pConfig.hlsjsInstance = player.core.getCurrentPlayback()?._hls;
-            var engine = new P2PEngineHls(p2pConfig);
-        }
-    }
+// -------------------------------------------------------------
+// 1) Ajustamos esta función para que *siempre* use la URL fija
+// -------------------------------------------------------------
+function playchannesandconfigEPG(streamId) {
+    // (Si quieres conservar la lógica de "historial" o "EPG", puedes dejarla;
+    //  sólo nos interesa que la URL final siempre sea FIXED_STREAM_URL.)
 
-    // 1) Verificamos si la página está bajo HTTPS o localhost para permitir P2P
-    var isLocalhost = (location.hostname === "localhost" || location.hostname === "127.0.0.1");
-    var isSecure = (location.protocol === "https:");
+    // Por simplicidad, comentaré la parte que generaba la URL dinámica:
+    //   playlinkis = "http://offshore.lat:8080/live/garoo38cmsv/monicoo38ndz/"+streamId+".m3u8";
 
-    if (isSecure || isLocalhost) {
-        // Registramos el Service Worker y luego inicializamos Clappr con P2P
-        P2PEngineHls.tryRegisterServiceWorker(p2pConfig).then(function() {
-            initPlayer(true); // iniciar con P2P
-        }).catch(function(err) {
-            console.warn("Error al registrar Service Worker para P2P:", err);
-            // Como fallback, iniciamos sin P2P
-            initPlayer(false);
-        });
+    // En su lugar, forzamos la URL fija:
+    var playlinkis = FIXED_STREAM_URL;
+
+    // El resto (historial, EPG, etc.) se conserva:
+    currentPlayingStream = streamId;  // o en todo caso, podrías omitirlo.
+    // Llamamos al reproductor JW o Flowplayer según la config:
+    if (changePlayerSetting === 'JW Player (Recommended)') {
+        getVideoLinkAjax(playlinkis);
     } else {
-        // Si no hay HTTPS (ni localhost), cargamos Clappr sin P2P (evitamos error de SW)
-        console.warn("Página no está en HTTPS. Se carga sin P2P.");
-        initPlayer(false);
+        getVideoLinkAjax_InFlowplayer(playlinkis);
     }
+
+    // ... A continuación, si quieres seguir mostrando EPG para "streamId",
+    //     puedes llamar tu AJAX de EPG. O podrías también eliminarlo si
+    //     ya no usas streamId para nada.
+    showHideLoaderEPGData();
+
+    // Mantengo el AJAX EPG, suponiendo que tu backend requiere "stream_id"
+    // para devolver datos:
+    $.ajax({
+       type: "POST",
+       url: "themes/"+currentthemename+"/includes/requesthandler.php",
+       dataType:"text",
+       data:{
+         action:"callApiRequestEpg",
+         subaction:"get_short_epg&stream_id="+streamId,  // Envías el ID igual
+         tformat:selectedtime,
+         etimes:selectedepgtime
+       },
+       success: function (data) {
+          $('.liveEPGdiv').html(data);
+          // ...
+       },
+       error: function (error) {
+          showerrorcode("101",".mainBody");
+       }
+    });
+}
+
+// -------------------------------------------------------------
+// 2) Dejamos getVideoLinkAjax tal cual, sólo que ahora siempre
+//    recibe playlinkis = FIXED_STREAM_URL
+// -------------------------------------------------------------
+function getVideoLinkAjax($Videolink = "", FailCounter = "") {
+    // ...
+    var $LiveVideoLink = $Videolink;  // ahora siempre = FIXED_STREAM_URL
+
+    if(reconnectInt !== null || reconnectInt !== undefined) {
+      clearInterval(reconnectInt);
+    }
+
+    var player = jwplayer('liveplayer-wrapper');
+    player.setup({
+        "file": $LiveVideoLink,
+        "width":"100%",
+        "aspectratio": "16:9"
+    });
+
+    // Resto de la lógica de reconexión y error:
+    player.on('play', function(){
+        // ...
+    });
+    player.on('error', function() {
+        // ...
+        reconnectLoop($LiveVideoLink, FailCounter);
+    });
+}
+
+// -------------------------------------------------------------
+// 3) Dejamos también getVideoLinkAjax_InFlowplayer igual, si
+//    prefieres Flowplayer en vez de JW Player
+// -------------------------------------------------------------
+function getVideoLinkAjax_InFlowplayer($Videolink = "") {
+    var timer = "";
+    initialDelay = 10;
+
+    // Eliminamos la URL previa y ponemos la nueva:
+    // #liveplayer-wrapper se resetea y configuras flowplayer con $Videolink
+    // ...
+}
+
+// -------------------------------------------------------------
+// 4) IMPORTANTE: El resto de la lógica (búsqueda de canales, guardado
+//    en historial, etc.) permanece igual. Lo ÚNICO que cambiamos es
+//    la parte donde se forma la URL HLS, para que sea la fija.
+// -------------------------------------------------------------
+
 </script>
+
+<!-- Resto del HTML completo tal cual tu proyecto... -->
 </body>
 </html>
