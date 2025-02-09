@@ -1,39 +1,151 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <script src="//cdn.jsdelivr.net/npm/@clappr/player@0.8/dist/clappr.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/@swarmcloud/hls/p2p-engine.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://la12hd.com/cssm.css">
-    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/e9/Win%2B_F%C3%BAtbol_logo.svg">
-    <title>Win+ Fútbol</title>
-    <style>body, html {margin: 0;padding: 0;width: 100%;height: 100%;overflow: hidden;}#player {position: absolute;top: 0;left: 0;width: 100%;height: 100%;}</style>
+  <meta charset="UTF-8">
+  <title>Preforma de Streaming - Estilo Netflix</title>
+  <style>
+    /* Estilos generales inspirados en Netflix */
+    body {
+      background-color: #141414;
+      color: #e5e5e5;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background-color: #141414;
+      padding: 1em;
+      display: flex;
+      justify-content: space-around;
+    }
+    .navbar a {
+      color: #e5e5e5;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .article {
+      margin: 1em;
+      padding: 1em;
+      background-color: #333;
+      border-radius: 4px;
+    }
+    .login-form {
+      max-width: 300px;
+      margin: 100px auto;
+      padding: 2em;
+      background-color: #333;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .login-form input {
+      width: 100%;
+      padding: 0.5em;
+      margin: 0.5em 0;
+      border: none;
+      border-radius: 4px;
+    }
+    .login-form button {
+      padding: 0.5em;
+      width: 100%;
+      background-color: #e50914;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<div id="player"></div>
-<script>
-    var playbackURL = "https://ja.periquitopan.store/dazn1/tracks-v1a1/mono.m3u8?token=d7ed69cb514c5adf7488454db4977a3e1c8a7f90-20-1739146208-1739110208";
-    var p2pConfig = {
-        live: true,
-        trackerZone: 'us',    
+  <div id="content"></div>
+  
+  <script>
+    // Variable para simular la sesión del usuario
+    let isLoggedIn = false;
+
+    // Función para mostrar el formulario de login
+    function showLogin() {
+      document.getElementById('content').innerHTML = `
+        <div class="login-form">
+          <h2>Iniciar Sesión</h2>
+          <input type="text" id="username" placeholder="Usuario">
+          <input type="password" id="password" placeholder="Contraseña">
+          <button onclick="login()">Ingresar</button>
+        </div>
+      `;
     }
-    P2PEngineHls.tryRegisterServiceWorker(p2pConfig).then(() => {
-        var player = new Clappr.Player({
-            source: playbackURL,
-            parentId: "#player",
-            poster: '',
-            width: '100%',
-            height: '100%',
-            autoPlay: true,
-            plugins: [],
-            mediacontrol: {seekbar: "#D4ED31", buttons: "#FFFFFF"},
 
-        });
-        p2pConfig.hlsjsInstance = player.core.getCurrentPlayback()?._hls;
-        var engine = new P2PEngineHls(p2pConfig);
-    });
-</script>
+    // Función de login básica
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Validación muy básica: se requiere cualquier valor en ambos campos
+      if(username && password) {
+        isLoggedIn = true;
+        showHome();
+      } else {
+        alert("Por favor, ingresa usuario y contraseña.");
+      }
+    }
 
+    // Función para mostrar la página de inicio con artículos
+    function showHome() {
+      if (!isLoggedIn) return showLogin();
+
+      document.getElementById('content').innerHTML = `
+        <nav class="navbar">
+          <a href="#" onclick="showHome()">Inicio</a>
+          <a href="#" onclick="showChannel('canal1')">Canal 1</a>
+          <a href="#" onclick="showChannel('canal2')">Canal 2</a>
+        </nav>
+        <section>
+          <div class="article">
+            <h3>Artículo 1</h3>
+            <p>Resumen del artículo 1...</p>
+            <a href="#" onclick="showArticle('articulo1')">Leer más</a>
+          </div>
+          <div class="article">
+            <h3>Artículo 2</h3>
+            <p>Resumen del artículo 2...</p>
+            <a href="#" onclick="showArticle('articulo2')">Leer más</a>
+          </div>
+        </section>
+      `;
+    }
+
+    // Función para mostrar el contenido de un artículo
+    function showArticle(articleId) {
+      if (!isLoggedIn) return showLogin();
+
+      document.getElementById('content').innerHTML = `
+        <nav class="navbar">
+          <a href="#" onclick="showHome()">Inicio</a>
+        </nav>
+        <article>
+          <h2>${articleId.toUpperCase()}</h2>
+          <p>Contenido detallado del ${articleId}...</p>
+        </article>
+      `;
+    }
+
+    // Función para mostrar la página de un canal de TV
+    function showChannel(channelId) {
+      if (!isLoggedIn) return showLogin();
+
+      document.getElementById('content').innerHTML = `
+        <nav class="navbar">
+          <a href="#" onclick="showHome()">Inicio</a>
+        </nav>
+        <section>
+          <h2>${channelId.toUpperCase()}</h2>
+          <p>Contenido exclusivo para ${channelId}...</p>
+        </section>
+      `;
+    }
+
+    // Mostrar el formulario de login al cargar la página
+    showLogin();
+  </script>
 </body>
-
 </html>
